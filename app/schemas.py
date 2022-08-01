@@ -7,3 +7,5 @@ class EncryptRq(BaseModel):
 class EncryptCaesarRq(EncryptRq):
     shift: int
 
+class EncryptRs(BaseModel):
+    cypherText: str

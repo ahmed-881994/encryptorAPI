@@ -11,9 +11,9 @@ app = FastAPI()
 async def healthCheck():
     return {"Hello": "World"}
 
-@app.post("/caesar")
+@app.post("/caesar", response_model= schemas.EncryptRs)
 async def caesar(body: schemas.EncryptCaesarRq):
-    return body
+    return {'cypherText':'test'}
 
 @app.post("/morse")
 async def morse(body: schemas.EncryptRq):
