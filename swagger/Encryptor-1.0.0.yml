@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: Encryptor
+  description: This is an API that implements simple cyphers ex. ( Caesar, Morse )
+  contact:
+    name: Ahmed Safwat
+    email: ahmed-881994@hotmail.com
+  version: 1.0.0
+servers:
+  - url: "/encryptor/v1"
+paths:
+  /caesar:
+    post:
+      tags:
+        - Encrypt
+      description: Encrypt input with the caesar cypher
+      operationId: encryptCaesar
+      requestBody:
+        description: The request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/encryptCaesarRq"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/encryptRs"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorRs"
+  /morse:
+    post:
+      tags:
+        - Encrypt
+      description: Encrypt input with the Morse cypher
+      operationId: encryptMorse
+      requestBody:
+        description: The request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/encryptRq"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/encryptRs"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorRs"
+  /numeric:
+    post:
+      tags:
+        - Encrypt
+      description: Encrypt input with the Numeric cypher
+      operationId: encryptNumeric
+      requestBody:
+        description: The request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/encryptRq"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/encryptRs"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorRs"
+  /reversenumeric:
+    post:
+      tags:
+        - Encrypt
+      description: Encrypt input with the Reverse Numeric cypher
+      operationId: encryptReverseNumeric
+      requestBody:
+        description: The request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/encryptRq"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/encryptRs"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorRs"
+
+components:
+  schemas:
+    encryptCaesarRq:
+      type: object
+      properties:
+        plainText:
+          type: string
+          description: Text to be encrypted
+        language:
+          type: string
+          enum:
+            - AR
+            - EN
+          description: >
+            The language of the text to be encrypted 
+            A: Arabic 
+            E: English
+        shift:
+          type: integer
+          description: The value of the shift to be used.
+      required:
+        - plainText
+        - language
+        - shift
+    encryptRq:
+      type: object
+      properties:
+        plainText:
+          type: string
+          description: Text to be encrypted
+        language:
+          type: string
+          enum:
+            - AR
+            - EN
+          description: >
+            The language of the text to be encrypted 
+            A: Arabic 
+            E: English
+      required:
+        - "plainText"
+        - "language"
+    encryptRs:
+      type: object
+      properties:
+        cypherText:
+          type: string
+          description: The encrypted text
+      required:
+        - "cypherText"
+    errorRs:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          description: Error message
+      required:
+        - "errorMessage"
