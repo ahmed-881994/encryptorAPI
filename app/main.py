@@ -1,31 +1,23 @@
 from unittest import result
-from fastapi import Body, FastAPI, HTTPException, status
+from fastapi import Body, FastAPI, HTTPException, status, responses
 from . import schemas, methods
 
 
 app = FastAPI()
 
 def get_application() -> FastAPI:
-    application = FastAPI(title="Encryptor", description="Encrypt plain text using simple encryption i.e: Caesar, Morse,..., etc.",version="0.1.0")
-    # origins = [
-    #     config.API_CONFIG["origin_local_ip"],
-    #     config.API_CONFIG["origin_local_url"]
-    # ]
-    # application.add_middleware(
-    #     CORSMiddleware,
-    #     allow_origins=origins,
-    #     allow_credentials=True,
-    #     allow_methods=["*"],
-    #     allow_headers=["*"],
-    # )
-    #application.include_router(processA.router)
+    application = FastAPI(title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.",version="0.1.0")
     return application
 
 app = get_application()
 
-@app.get("/")
+@app.get("/",include_in_schema=False)
 async def healthCheck():
     return {"Hello": "World"}
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def getfavicon():
+    return responses.FileResponse('app/assets/favicon.ico')
 
 @app.post("/caesar", response_model= schemas.EncryptRs)
 async def caesar(body: schemas.EncryptCaesarRq):
@@ -44,10 +36,18 @@ async def morse(body: schemas.EncryptRq):
     else:
         return {"cypherText": result['cypherText']}
 
-@app.post("/numeric")
+@app.post("/numeric", response_model= schemas.EncryptRs)
 async def numeric(body: schemas.EncryptRq):
-    return body
+    result = methods.encryptNumeric(body.plainText, body.language)
+    if result['status'] != 200:
+        raise HTTPException(status_code=result['status'], detail=result['detail'])
+    else:
+        return {"cypherText": result['cypherText']}
 
-@app.post("/reversenumeric")
+@app.post("/reversenumeric", response_model= schemas.EncryptRs)
 async def reversenumeric(body: schemas.EncryptRq):
-    return body
+    result = methods.encryptReverseNumeric(body.plainText, body.language)
+    if result['status'] != 200:
+        raise HTTPException(status_code=result['status'], detail=result['detail'])
+    else:
+        return {"cypherText": result['cypherText']}

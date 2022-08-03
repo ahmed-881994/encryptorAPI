@@ -1,170 +1,193 @@
-openapi: 3.0.3
+openapi: 3.0.2
 info:
   title: Encryptor
-  description: This is an API that implements simple cyphers ex. ( Caesar, Morse )
   contact:
     name: Ahmed Safwat
     email: ahmed-881994@hotmail.com
-  version: 1.0.0
-servers:
-  - url: "/encryptor/v1"
+  description: |
+    Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.
+
+    Available methods:
+
+      * Caesar
+      * Morse
+      * Numeric
+      * Inverse Numeric
+
+    ---
+
+    [GitHub repo](https://github.com/ahmed-881994/encryptorAPI)
+  version: 0.1.0
 paths:
   /caesar:
     post:
-      tags:
-        - Encrypt
-      description: Encrypt input with the caesar cypher
-      operationId: encryptCaesar
+      summary: Encrypts plain text using the Caesar method
+      operationId: caesar_caesar_post
       requestBody:
-        description: The request body
+        description: Request body
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/encryptCaesarRq"
+              $ref: '#/components/schemas/EncryptCaesarRq'
+        required: true
       responses:
-        "200":
-          description: Success
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/encryptRs"
-        "400":
-          description: Bad request
+                $ref: '#/components/schemas/EncryptRs'
+        '422':
+          description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/errorRs"
+                $ref: '#/components/schemas/HTTPValidationError'
   /morse:
     post:
-      tags:
-        - Encrypt
-      description: Encrypt input with the Morse cypher
-      operationId: encryptMorse
+      summary: Encrypts plain text using the Morse method
+      operationId: morse_morse_post
       requestBody:
-        description: The request body
+        description: Request body
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/encryptRq"
+              $ref: '#/components/schemas/EncryptRq'
+        required: true
       responses:
-        "200":
-          description: Success
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/encryptRs"
-        "400":
-          description: Bad request
+                $ref: '#/components/schemas/EncryptRs'
+        '422':
+          description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/errorRs"
+                $ref: '#/components/schemas/HTTPValidationError'
   /numeric:
     post:
-      tags:
-        - Encrypt
-      description: Encrypt input with the Numeric cypher
-      operationId: encryptNumeric
+      summary: Encrypts plain text using the Numeric method
+      operationId: numeric_numeric_post
       requestBody:
-        description: The request body
+        description: Request body
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/encryptRq"
+              $ref: '#/components/schemas/EncryptRq'
+        required: true
       responses:
-        "200":
-          description: Success
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/encryptRs"
-        "400":
-          description: Bad request
+                $ref: '#/components/schemas/EncryptRs'
+        '422':
+          description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/errorRs"
+                $ref: '#/components/schemas/HTTPValidationError'
   /reversenumeric:
     post:
-      tags:
-        - Encrypt
-      description: Encrypt input with the Reverse Numeric cypher
-      operationId: encryptReverseNumeric
+      summary: Encrypts plain text using the Reverse Numeric method
+      operationId: reversenumeric_reversenumeric_post
       requestBody:
-        description: The request body
+        description: Request body
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/encryptRq"
+              $ref: '#/components/schemas/EncryptRq'
+        required: true
       responses:
-        "200":
-          description: Success
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/encryptRs"
-        "400":
-          description: Bad request
+                $ref: '#/components/schemas/EncryptRs'
+        '422':
+          description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/errorRs"
-
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    encryptCaesarRq:
-      type: object
-      properties:
-        plainText:
-          type: string
-          description: Text to be encrypted
-        language:
-          type: string
-          enum:
-            - AR
-            - EN
-          description: >
-            The language of the text to be encrypted 
-            A: Arabic 
-            E: English
-        shift:
-          type: integer
-          description: The value of the shift to be used.
+    EncryptCaesarRq:
+      title: EncryptCaesarRq
       required:
         - plainText
         - language
         - shift
-    encryptRq:
       type: object
       properties:
         plainText:
+          title: Plaintext
           type: string
-          description: Text to be encrypted
         language:
-          type: string
-          enum:
-            - AR
-            - EN
-          description: >
-            The language of the text to be encrypted 
-            A: Arabic 
-            E: English
+          $ref: '#/components/schemas/langEnum'
+        shift:
+          title: Shift
+          type: integer
+    EncryptRq:
+      title: EncryptRq
       required:
-        - "plainText"
-        - "language"
-    encryptRs:
+        - plainText
+        - language
+      type: object
+      properties:
+        plainText:
+          title: Plaintext
+          type: string
+        language:
+          $ref: '#/components/schemas/langEnum'
+    EncryptRs:
+      title: EncryptRs
+      required:
+        - cypherText
       type: object
       properties:
         cypherText:
+          title: Cyphertext
           type: string
-          description: The encrypted text
-      required:
-        - "cypherText"
-    errorRs:
+    HTTPValidationError:
+      title: HTTPValidationError
       type: object
       properties:
-        errorMessage:
-          type: string
-          description: Error message
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    ValidationError:
+      title: ValidationError
       required:
-        - "errorMessage"
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+    langEnum:
+      title: langEnum
+      enum:
+        - AR
+        - EN
+      type: string
+      description: An enumeration.

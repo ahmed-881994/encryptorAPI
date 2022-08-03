@@ -44,7 +44,7 @@ def encryptCaesar(plainText: str, lang: str, shift: int) -> Dict:
         return {"status": 400, "detail": "Plain text and language choice don't match"}
 
 
-def encryptMorse(plainText: str, lang: str):
+def encryptMorse(plainText: str, lang: str)-> Dict:
     cypherText = ""
     plainText=plainText.upper()
     chars = list(plainText)
@@ -73,9 +73,53 @@ def encryptMorse(plainText: str, lang: str):
         return {"status": 400, "detail": "Plain text and language choice don't match"}
 
 
-def encryptNumeric():
-    return
+def encryptNumeric(plainText: str, lang: str)-> Dict:
+    cypherText = ""
+    plainText=plainText.upper()
+    chars = list(plainText)
+    if lang == 'AR':
+        chars = handleArabicVariants(chars)
+    if chars[0] in lookups.alphabets[lang]["letters"] or chars[0] in lookups.alphabets["AR"]["numbers"] or chars[0] in lookups.alphabets["EN"]["numbers"]:
+        for char in chars:
+            if char == " ": # handles empty space
+                cypherText += '/'
+            elif char == '.': # handles end of sentence
+                cypherText += '//'
+            elif char in lookups.alphabets["SpecialCharacters"]: # removes special characters
+                pass
+            elif (
+                char in lookups.alphabets["AR"]["numbers"]
+                or char in lookups.alphabets["EN"]["numbers"]):
+                pass
+            else:
+                number = lookups.alphabets[lang]["letters"].index(char)+1
+                cypherText+= str(number)
+        return {"status": 200, "cypherText": cypherText}
+    else:
+        return {"status": 400, "detail": "Plain text and language choice don't match"}
 
 
-def encryptReverseNumeric():
-    return
+def encryptReverseNumeric(plainText: str, lang: str)-> Dict:
+    cypherText = ""
+    plainText=plainText.upper()
+    chars = list(plainText)
+    if lang == 'AR':
+        chars = handleArabicVariants(chars)
+    if chars[0] in lookups.alphabets[lang]["letters"] or chars[0] in lookups.alphabets["AR"]["numbers"] or chars[0] in lookups.alphabets["EN"]["numbers"]:
+        for char in chars:
+            if char == " ": # handles empty space
+                cypherText += '/'
+            elif char == '.': # handles end of sentence
+                cypherText += '//'
+            elif char in lookups.alphabets["SpecialCharacters"]: # removes special characters
+                pass
+            elif (
+                char in lookups.alphabets["AR"]["numbers"]
+                or char in lookups.alphabets["EN"]["numbers"]):
+                pass
+            else:
+                number = lookups.alphabets[lang]["reverseLetters"].index(char)+1
+                cypherText+= str(number)
+        return {"status": 200, "cypherText": cypherText}
+    else:
+        return {"status": 400, "detail": "Plain text and language choice don't match"}
