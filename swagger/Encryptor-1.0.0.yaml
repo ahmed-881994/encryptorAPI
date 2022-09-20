@@ -17,7 +17,7 @@ info:
     ---
 
     [GitHub repo](https://github.com/ahmed-881994/encryptorAPI)
-  version: 0.1.0
+  version: 1.0.0
 paths:
   /caesar:
     post:
