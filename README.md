@@ -8,7 +8,7 @@ Available methods:
   * Numeric
   * Inverse Numeric
 ---
-## Version: 0.1.0
+## Version: 1.0.0
 
 ### /caesar
 
@@ -68,9 +68,17 @@ Encrypts plain text using the Reverse Numeric method
 
       
 ----
-      
+## Installing dependencies
+
 To install dependencies please make sure you have Python installed and use
 
-`$ pip install fastapi[all]`
+`pip install fastapi[all]`
 
 to install **FastAPI** and all it's dependencies
+
+---
+## Docker
+
+To use the API in docker
+1. run `docker build -t encryptorapi .` to build the image
+2. run `docker run -it --rm --name encryptorapi -p 8000:8000  encryptorapi` to start a container with the address `127.0.0.1:8000`
