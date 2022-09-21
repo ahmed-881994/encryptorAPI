@@ -13,7 +13,7 @@ app = get_application()
 
 @app.get("/",include_in_schema=False)
 async def healthCheck():
-    return {"Hello": "World"}
+    return {"Status": "running"}
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def getfavicon():

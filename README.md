@@ -77,6 +77,11 @@ To install dependencies please make sure you have Python installed and use
 to install **FastAPI** and all it's dependencies
 
 ---
+## Running the app using Uvicorn
+
+run `uvicorn app.main:app --reload` the `--reload` flag enables hot reload on saving any changes
+
+---
 ## Docker
 
 To use the API in docker
