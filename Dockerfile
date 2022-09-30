@@ -13,8 +13,7 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 # copy every content from the local file to the image
 COPY ./app /code/app
 
-# configure the container to run in an executed manner
-# ENTRYPOINT [ "python" ]
+EXPOSE 8000
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 

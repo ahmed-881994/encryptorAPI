@@ -18,6 +18,9 @@ info:
 
     [GitHub repo](https://github.com/ahmed-881994/encryptorAPI)
   version: 1.0.0
+servers:
+  - url: 127.0.0.1:8000
+    description: localhost
 paths:
   /caesar:
     post:
