@@ -1,5 +1,4 @@
-from unittest import result
-from fastapi import Body, FastAPI, HTTPException, status, responses
+from fastapi import FastAPI, HTTPException, responses
 from . import schemas, methods
 
 
@@ -12,7 +11,12 @@ def get_application() -> FastAPI:
 app = get_application()
 
 @app.get("/",include_in_schema=False)
-async def healthCheck():
+async def health_check():
+    """Used to check the status of the app
+
+    Returns:
+        JSON: Current status
+    """
     return {"Status": "running"}
 
 @app.get("/favicon.ico", include_in_schema=False)
@@ -21,33 +25,77 @@ async def getfavicon():
 
 @app.post("/caesar", response_model= schemas.EncryptRs)
 async def caesar(body: schemas.EncryptCaesarRq):
-    result = methods.encryptCaesar(body.plainText, body.language, body.shift)
+    """Takes input & validates against schema then encrypts using Caesar encryption & returns result
+
+    Args:
+        body (schemas.EncryptCaesarRq): Input JSON request
+
+    Raises:
+        HTTPException: Error in execution
+    Returns:
+        JSON: Encrypted text
+    """
+    result = methods.encrypt_caesar(body.plainText, body.language, body.shift)
     print(result)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=result['detail'])  
+        raise HTTPException(status_code=result['status'], detail=result['detail'])
     else:
-        return {"cypherText": result['cypherText']}
+        return {"cypherText": result['cypher_text']}
 
 @app.post("/morse", response_model= schemas.EncryptRs)
 async def morse(body: schemas.EncryptRq):
-    result = methods.encryptMorse(body.plainText, body.language)
+    """Takes input & validates against schema then encrypts using Morse encryption & returns result
+
+    Args:
+        body (schemas.EncryptRq): Input JSON request
+
+    Raises:
+        HTTPException: Error in execution
+
+    Returns:
+        JSON: Encrypted text
+    """
+    result = methods.encrypt_morse(body.plainText, body.language)
     if result['status'] != 200:
         raise HTTPException(status_code=result['status'], detail=result['detail'])
     else:
-        return {"cypherText": result['cypherText']}
+        return {"cypherText": result['cypher_text']}
 
 @app.post("/numeric", response_model= schemas.EncryptRs)
 async def numeric(body: schemas.EncryptRq):
-    result = methods.encryptNumeric(body.plainText, body.language)
+    """Takes input & validates against schema then encrypts using Numeric encryption & returns result
+
+    Args:
+        body (schemas.EncryptRq): Input JSON request
+
+    Raises:
+        HTTPException: Error in execution
+
+    Returns:
+        JSON: Encrypted text
+    """
+    result = methods.encrypt_numeric(body.plainText, body.language)
     if result['status'] != 200:
         raise HTTPException(status_code=result['status'], detail=result['detail'])
     else:
-        return {"cypherText": result['cypherText']}
+        return {"cypherText": result['cypher_text']}
 
 @app.post("/reversenumeric", response_model= schemas.EncryptRs)
-async def reversenumeric(body: schemas.EncryptRq):
-    result = methods.encryptReverseNumeric(body.plainText, body.language)
+async def reverse_numeric(body: schemas.EncryptRq):
+    """Takes input & validates against schema then encrypts using Inverse Numeric encryption & returns result
+
+    Args:
+        body (schemas.EncryptRq): Input JSON request
+
+    Raises:
+        HTTPException: Error in execution
+
+    Returns:
+        JSON: Encrypted text
+    """
+    result = methods.encrypt_reverse_numeric(body.plainText, body.language)
     if result['status'] != 200:
         raise HTTPException(status_code=result['status'], detail=result['detail'])
     else:
-        return {"cypherText": result['cypherText']}
+        return {"cypherText": result['cypher_text']}
+    
