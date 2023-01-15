@@ -59,7 +59,7 @@ def encrypt_caesar(plain_text: str, lang: str, shift: int) -> Dict:
                 cypher_text += lookups.alphabets[lang]["letters"][shifted_index]
         return {"status": 200, "cypher_text": cypher_text}
     else:
-        return {"status": 400, "detail": "Plain text and language choice don't match"}
+        return {"status": 400, "msg": "Plain text and language choice don't match"}
 
 
 def encrypt_morse(plain_text: str, lang: str)-> Dict:
@@ -97,7 +97,7 @@ def encrypt_morse(plain_text: str, lang: str)-> Dict:
                 cypher_text+= lookups.alphabets['Morse'][lang][lookups.alphabets[lang]["letters"].index(char)]
         return {"status": 200, "cypher_text": cypher_text}
     else:
-        return {"status": 400, "detail": "Plain text and language choice don't match"}
+        return {"status": 400, "msg": "Plain text and language choice don't match"}
 
 
 def encrypt_numeric(plain_text: str, lang: str)-> Dict:
@@ -129,10 +129,10 @@ def encrypt_numeric(plain_text: str, lang: str)-> Dict:
                 pass
             else:
                 number = lookups.alphabets[lang]["letters"].index(char)+1
-                cypher_text+= str(number)
+                cypher_text+= ' ' + str(number)
         return {"status": 200, "cypher_text": cypher_text}
     else:
-        return {"status": 400, "detail": "Plain text and language choice don't match"}
+        return {"status": 400, "msg": "Plain text and language choice don't match"}
 
 
 def encrypt_reverse_numeric(plain_text: str, lang: str)-> Dict:
@@ -164,7 +164,7 @@ def encrypt_reverse_numeric(plain_text: str, lang: str)-> Dict:
                 pass
             else:
                 number = lookups.alphabets[lang]["reverseLetters"].index(char)+1
-                cypher_text+= str(number)
+                cypher_text+= ' ' + str(number)
         return {"status": 200, "cypher_text": cypher_text}
     else:
-        return {"status": 400, "detail": "Plain text and language choice don't match"}
+        return {"status": 400, "msg": "Plain text and language choice don't match"}

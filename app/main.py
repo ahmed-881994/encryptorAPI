@@ -38,7 +38,7 @@ async def caesar(body: schemas.EncryptCaesarRq):
     result = methods.encrypt_caesar(body.plainText, body.language, body.shift)
     print(result)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=result['detail'])
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
 
@@ -57,7 +57,7 @@ async def morse(body: schemas.EncryptRq):
     """
     result = methods.encrypt_morse(body.plainText, body.language)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=result['detail'])
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
 
@@ -76,7 +76,7 @@ async def numeric(body: schemas.EncryptRq):
     """
     result = methods.encrypt_numeric(body.plainText, body.language)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=result['detail'])
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
 
@@ -95,7 +95,7 @@ async def reverse_numeric(body: schemas.EncryptRq):
     """
     result = methods.encrypt_reverse_numeric(body.plainText, body.language)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=result['detail'])
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
     

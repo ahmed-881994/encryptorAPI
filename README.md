@@ -84,6 +84,10 @@ run `uvicorn app.main:app --reload` the `--reload` flag enables hot reload on sa
 ---
 ## Docker
 
-To use the API in docker
-1. run `docker build -t encryptorapi .` to build the image
-2. run `docker run -it --rm --name encryptorapi -p 8000:8000  encryptorapi` to start a container with the address `127.0.0.1:8000`
+- To use the API in docker using the Dockerfile
+  1. run `docker build -t encryptorapi .` to build the image
+  2. run `docker run -it --rm --name encryptorapi -p 8000:8000  encryptorapi` to start a container with the address `127.0.0.1:8000`
+
+- To use docker-compose
+
+  run `docker-compose up` to spin up a stack of an NGINX server and the API.
