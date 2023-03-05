@@ -1,8 +1,13 @@
-from fastapi import FastAPI, HTTPException, responses
+from fastapi import FastAPI, HTTPException, responses, Request
 from . import schemas, methods
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
-
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 def get_application() -> FastAPI:
     application = FastAPI(title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.",version="0.1.0")
@@ -24,7 +29,8 @@ async def getfavicon():
     return responses.FileResponse('app/assets/favicon.ico')
 
 @app.post("/caesar", response_model= schemas.EncryptRs)
-async def caesar(body: schemas.EncryptCaesarRq):
+@limiter.limit("5/minute")
+async def caesar(body: schemas.EncryptCaesarRq, request: Request):
     """Takes input & validates against schema then encrypts using Caesar encryption & returns result
 
     Args:
@@ -36,14 +42,14 @@ async def caesar(body: schemas.EncryptCaesarRq):
         JSON: Encrypted text
     """
     result = methods.encrypt_caesar(body.plainText, body.language, body.shift)
-    print(result)
     if result['status'] != 200:
         raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
 
 @app.post("/morse", response_model= schemas.EncryptRs)
-async def morse(body: schemas.EncryptRq):
+@limiter.limit("5/minute")
+async def morse(body: schemas.EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Morse encryption & returns result
 
     Args:
@@ -62,7 +68,8 @@ async def morse(body: schemas.EncryptRq):
         return {"cypherText": result['cypher_text']}
 
 @app.post("/numeric", response_model= schemas.EncryptRs)
-async def numeric(body: schemas.EncryptRq):
+@limiter.limit("5/minute")
+async def numeric(body: schemas.EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Numeric encryption & returns result
 
     Args:
@@ -81,7 +88,8 @@ async def numeric(body: schemas.EncryptRq):
         return {"cypherText": result['cypher_text']}
 
 @app.post("/reversenumeric", response_model= schemas.EncryptRs)
-async def reverse_numeric(body: schemas.EncryptRq):
+@limiter.limit("5/minute")
+async def reverse_numeric(body: schemas.EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Inverse Numeric encryption & returns result
 
     Args:
@@ -98,4 +106,3 @@ async def reverse_numeric(body: schemas.EncryptRq):
         raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
-    

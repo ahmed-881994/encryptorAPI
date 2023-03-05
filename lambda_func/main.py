@@ -1,10 +1,13 @@
-from fastapi import FastAPI, HTTPException, responses
+from fastapi import FastAPI, HTTPException, responses, Request
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from mangum import Mangum
 from enum import Enum
 from typing import Dict
 from pydantic import BaseModel, Field
 
-
+###Schemas###
 class lang_enum(str, Enum):
 
     AR = 'AR'
@@ -25,23 +28,21 @@ class EncryptCaesarRq(EncryptRq):
 class EncryptRs(BaseModel):
 
     cypherText: str
-    
-    
-app = FastAPI()
+######    
+###API###
 
 
 def get_application() -> FastAPI:
-    application = FastAPI(
-        title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.", version="0.1.0")
+    application = FastAPI(title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.",version="0.1.0")
     return application
 
-
 app = get_application()
-
 handler = Mangum(app)
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-
-@app.get("/", include_in_schema=False)
+@app.get("/",include_in_schema=False)
 async def health_check():
     """Used to check the status of the app
 
@@ -50,14 +51,13 @@ async def health_check():
     """
     return {"Status": "running"}
 
-
 @app.get("/favicon.ico", include_in_schema=False)
 async def getfavicon():
-    return responses.FileResponse('favicon.ico')
-
+    return responses.FileResponse('app/assets/favicon.ico')
 
 @app.post("/caesar", response_model= EncryptRs)
-async def caesar(body: EncryptCaesarRq):
+@limiter.limit("5/minute")
+async def caesar(body: EncryptCaesarRq, request: Request):
     """Takes input & validates against schema then encrypts using Caesar encryption & returns result
 
     Args:
@@ -69,16 +69,14 @@ async def caesar(body: EncryptCaesarRq):
         JSON: Encrypted text
     """
     result = encrypt_caesar(body.plainText, body.language, body.shift)
-    print(result)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=[
-                            {'msg': result['msg']}])
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
 
-
-@app.post("/morse", response_model=EncryptRs)
-async def morse(body: EncryptRq):
+@app.post("/morse", response_model= EncryptRs)
+@limiter.limit("5/minute")
+async def morse(body: EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Morse encryption & returns result
 
     Args:
@@ -92,14 +90,13 @@ async def morse(body: EncryptRq):
     """
     result = encrypt_morse(body.plainText, body.language)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=[
-                            {'msg': result['msg']}])
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
 
-
-@app.post("/numeric", response_model=EncryptRs)
-async def numeric(body: EncryptRq):
+@app.post("/numeric", response_model= EncryptRs)
+@limiter.limit("5/minute")
+async def numeric(body: EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Numeric encryption & returns result
 
     Args:
@@ -113,14 +110,13 @@ async def numeric(body: EncryptRq):
     """
     result = encrypt_numeric(body.plainText, body.language)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=[
-                            {'msg': result['msg']}])
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
 
-
-@app.post("/reversenumeric", response_model=EncryptRs)
-async def reverse_numeric(body: EncryptRq):
+@app.post("/reversenumeric", response_model= EncryptRs)
+@limiter.limit("5/minute")
+async def reverse_numeric(body: EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Inverse Numeric encryption & returns result
 
     Args:
@@ -134,14 +130,12 @@ async def reverse_numeric(body: EncryptRq):
     """
     result = encrypt_reverse_numeric(body.plainText, body.language)
     if result['status'] != 200:
-        raise HTTPException(status_code=result['status'], detail=[
-                            {'msg': result['msg']}])
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
         return {"cypherText": result['cypher_text']}
-
+######
+###Methods###
 # handles Arabic letters variants
-
-
 def handle_arabic_variants(chars: list[str]) -> list[str]:
     """Handles variants of the Arabic letters and returns a default value for similar variants
 
@@ -322,8 +316,8 @@ def encrypt_reverse_numeric(plain_text: str, lang: str) -> Dict:
         return {"status": 200, "cypher_text": cypher_text}
     else:
         return {"status": 400, "msg": "Plain text and language choice don't match"}
-
-
+######
+###Lookups###
 alphabets = {
     "AR": {
         "letters": [

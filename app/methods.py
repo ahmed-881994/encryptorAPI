@@ -55,7 +55,6 @@ def encrypt_caesar(plain_text: str, lang: str, shift: int) -> Dict:
                 elif lang == "AR":
                     if shifted_index > 27:
                         shifted_index -= 28
-                print(char,index,shifted_index)
                 cypher_text += lookups.alphabets[lang]["letters"][shifted_index]
         return {"status": 200, "cypher_text": cypher_text}
     else:
