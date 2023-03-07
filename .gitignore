@@ -4,4 +4,4 @@
 /versions
 lib
 .DS_Store
-lambda_function.zip
+lambda_func/lambda_function.zip
