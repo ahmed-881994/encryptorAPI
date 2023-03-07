@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException, responses, Request
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse, FileResponse
+from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from mangum import Mangum
@@ -35,12 +36,24 @@ class EncryptRs(BaseModel):
 def get_application() -> FastAPI:
     application = FastAPI(title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.",version="0.1.0")
     return application
-
 app = get_application()
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    detail=[]
+    detail.append({'msg': f'Rate limit exceeded: {exc.detail} Try again in a while...'})
+    res={'detail':detail}
+    return JSONResponse(
+        status_code=429,
+        content=res
+    )
+    
+LIMIT='5/minute'
+
 handler = Mangum(app)
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
 @app.get("/",include_in_schema=False)
 async def health_check():
@@ -53,10 +66,10 @@ async def health_check():
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def getfavicon():
-    return responses.FileResponse('app/assets/favicon.ico')
+    return FileResponse('app/assets/favicon.ico')
 
 @app.post("/caesar", response_model= EncryptRs)
-@limiter.limit("5/minute")
+@limiter.limit(LIMIT)
 async def caesar(body: EncryptCaesarRq, request: Request):
     """Takes input & validates against schema then encrypts using Caesar encryption & returns result
 
@@ -75,7 +88,7 @@ async def caesar(body: EncryptCaesarRq, request: Request):
         return {"cypherText": result['cypher_text']}
 
 @app.post("/morse", response_model= EncryptRs)
-@limiter.limit("5/minute")
+@limiter.limit(LIMIT)
 async def morse(body: EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Morse encryption & returns result
 
@@ -95,7 +108,7 @@ async def morse(body: EncryptRq, request: Request):
         return {"cypherText": result['cypher_text']}
 
 @app.post("/numeric", response_model= EncryptRs)
-@limiter.limit("5/minute")
+@limiter.limit(LIMIT)
 async def numeric(body: EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Numeric encryption & returns result
 
@@ -115,7 +128,7 @@ async def numeric(body: EncryptRq, request: Request):
         return {"cypherText": result['cypher_text']}
 
 @app.post("/reversenumeric", response_model= EncryptRs)
-@limiter.limit("5/minute")
+@limiter.limit(LIMIT)
 async def reverse_numeric(body: EncryptRq, request: Request):
     """Takes input & validates against schema then encrypts using Inverse Numeric encryption & returns result
 
