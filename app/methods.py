@@ -24,7 +24,7 @@ def encrypt_caesar(plain_text: str, lang: str, shift: int) -> Dict:
 
     Args:
         plain_text (str): Plain text to be encrypted
-        lang (str): Lanuage of plain text
+        lang (str): Language of plain text
         shift (int): The shift value
 
     Returns:
@@ -56,7 +56,7 @@ def encrypt_caesar(plain_text: str, lang: str, shift: int) -> Dict:
                     if shifted_index > 27:
                         shifted_index -= 28
                 cypher_text += lookups.alphabets[lang]["letters"][shifted_index]
-        return {"status": 200, "cypher_text": cypher_text}
+        return {"status": 200, "cypher_text": cypher_text.strip()}
     else:
         return {"status": 400, "msg": "Plain text and language choice don't match"}
 
@@ -66,7 +66,7 @@ def encrypt_morse(plain_text: str, lang: str)-> Dict:
 
     Args:
         plain_text (str): Plain text to be encrypted
-        lang (str): Lanuage of plain text
+        lang (str): Language of plain text
 
     Returns:
         Dict: Encrypted text
@@ -94,7 +94,7 @@ def encrypt_morse(plain_text: str, lang: str)-> Dict:
                     cypher_text+= ' ' +lookups.alphabets['Morse']['Numbers'][lookups.alphabets['EN']["numbers"].index(char)]
             else:
                 cypher_text+= ' ' +lookups.alphabets['Morse'][lang][lookups.alphabets[lang]["letters"].index(char)]
-        return {"status": 200, "cypher_text": cypher_text}
+        return {"status": 200, "cypher_text": cypher_text.strip()}
     else:
         return {"status": 400, "msg": "Plain text and language choice don't match"}
 
@@ -104,7 +104,7 @@ def encrypt_numeric(plain_text: str, lang: str)-> Dict:
 
     Args:
         plain_text (str): Plain text to be encrypted
-        lang (str): Lanuage of plain text
+        lang (str): Language of plain text
 
     Returns:
         Dict: Encrypted text
@@ -129,7 +129,7 @@ def encrypt_numeric(plain_text: str, lang: str)-> Dict:
             else:
                 number = lookups.alphabets[lang]["letters"].index(char)+1
                 cypher_text+= ' ' + str(number)
-        return {"status": 200, "cypher_text": cypher_text}
+        return {"status": 200, "cypher_text": cypher_text.strip()}
     else:
         return {"status": 400, "msg": "Plain text and language choice don't match"}
 
@@ -139,7 +139,7 @@ def encrypt_reverse_numeric(plain_text: str, lang: str)-> Dict:
 
     Args:
         plain_text (str): Plain text to be encrypted
-        lang (str): Lanuage of plain text
+        lang (str): Language of plain text
 
     Returns:
         Dict: Encrypted text
@@ -164,6 +164,32 @@ def encrypt_reverse_numeric(plain_text: str, lang: str)-> Dict:
             else:
                 number = lookups.alphabets[lang]["reverseLetters"].index(char)+1
                 cypher_text+= ' ' + str(number)
-        return {"status": 200, "cypher_text": cypher_text}
+        return {"status": 200, "cypher_text": cypher_text.strip()}
     else:
         return {"status": 400, "msg": "Plain text and language choice don't match"}
+    
+def encode_NATO(plain_text: str)-> Dict:   
+    """Encodes input text in the NATO phonetic alphabet
+
+    Args:
+        plain_text (str): Plain text to be encoded
+
+    Returns:
+        Dict: Encrypted text
+    """
+    cypher_text = ""
+    plain_text=plain_text.upper()
+    chars = list(plain_text)
+    if chars[0] in lookups.alphabets['EN']["letters"] or chars[0] in lookups.alphabets["EN"]["numbers"]:
+        for char in chars:
+            if char in lookups.alphabets["EN"]["numbers"]:
+                code = lookups.alphabets['NATONumbers'][lookups.alphabets['EN']["numbers"].index(char)]
+                cypher_text+= ' ' + str(code)
+            elif char == ' ':
+                cypher_text+= ' (space)'
+            else:
+                code = lookups.alphabets['NATOLetters'][lookups.alphabets['EN']["letters"].index(char)]
+                cypher_text+= ' ' + str(code)
+        return {"status": 200, "cypher_text": cypher_text.strip()}
+    else:
+        return {"status": 400, "msg": "This method only supports English characters"}

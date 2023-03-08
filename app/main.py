@@ -1,27 +1,24 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.responses import JSONResponse, FileResponse
 from . import schemas, methods
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-
-def get_application() -> FastAPI:
-    application = FastAPI(title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.",version="0.1.0")
-    return application
-
-app = get_application()
-
-
-@app.exception_handler(RateLimitExceeded)
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     detail=[]
     detail.append({'msg': f'Rate limit exceeded: {exc.detail} Try again in a while...'})
     res={'detail':detail}
     return JSONResponse(
-        status_code=429,
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
         content=res
     )
+    
+def get_application() -> FastAPI:
+    application = FastAPI(responses= {429:{'model':schemas.ErrorRs},400:{'model':schemas.ErrorRs}}, exception_handlers={429: rate_limit_exceeded_handler}, title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.",version="0.1.0")
+    return application
+
+app = get_application()
     
 LIMIT='5/minute'
 limiter = Limiter(key_func=get_remote_address)
@@ -115,6 +112,26 @@ async def reverse_numeric(body: schemas.EncryptRq, request: Request):
         JSON: Encrypted text
     """
     result = methods.encrypt_reverse_numeric(body.plainText, body.language)
+    if result['status'] != 200:
+        raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
+    else:
+        return {"cypherText": result['cypher_text']}
+    
+@app.post("/natoalphabet", response_model= schemas.EncryptRs)
+@limiter.limit(LIMIT)
+async def nato_alphabet(body: schemas.EncryptNATORq, request: Request):
+    """Takes input & validates against schema then encodes using NATO alphabet encoding & returns result
+
+    Args:
+        body (schemas.EncryptNATORq): Input JSON request
+
+    Raises:
+        HTTPException: Error in execution
+
+    Returns:
+        JSON: Encrypted text
+    """
+    result = methods.encode_NATO(body.plainText)
     if result['status'] != 200:
         raise HTTPException(status_code=result['status'], detail=[{'msg':result['msg']}])
     else:
