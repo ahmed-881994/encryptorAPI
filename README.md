@@ -7,8 +7,9 @@ Available methods:
   * Morse
   * Numeric
   * Inverse Numeric
+  * NATO alphabet
 ---
-## Version: 1.0.0
+## Version: 1.0.3
 
 ### /caesar
 
@@ -22,7 +23,9 @@ Encrypts plain text using the Caesar method
 | Code | Description |
 | ---- | ----------- |
 | 200 | Successful Response |
+| 400 | Bad Request |
 | 422 | Validation Error |
+| 429 | Rate Limit Exceeded|
 
 ### /morse
 
@@ -36,7 +39,9 @@ Encrypts plain text using the Morse method
 | Code | Description |
 | ---- | ----------- |
 | 200 | Successful Response |
+| 400 | Bad Request |
 | 422 | Validation Error |
+| 429 | Rate Limit Exceeded|
 
 ### /numeric
 
@@ -50,7 +55,9 @@ Encrypts plain text using the Numeric method
 | Code | Description |
 | ---- | ----------- |
 | 200 | Successful Response |
+| 400 | Bad Request |
 | 422 | Validation Error |
+| 429 | Rate Limit Exceeded|
 
 ### /reversenumeric
 
@@ -64,7 +71,25 @@ Encrypts plain text using the Reverse Numeric method
 | Code | Description |
 | ---- | ----------- |
 | 200 | Successful Response |
+| 400 | Bad Request |
 | 422 | Validation Error |
+| 429 | Rate Limit Exceeded|
+
+### /natoalphabet
+
+#### POST
+##### Summary:
+
+Encodes plain text using the NATO alphabet method
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Successful Response |
+| 400 | Bad Request |
+| 422 | Validation Error |
+| 429 | Rate Limit Exceeded|
 
       
 ----
@@ -72,7 +97,7 @@ Encrypts plain text using the Reverse Numeric method
 
 To install dependencies please make sure you have Python installed and use
 
-`pip install fastapi[all]`
+`pip install -r requirements.txt`
 
 to install **FastAPI** and all it's dependencies
 

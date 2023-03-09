@@ -19,7 +19,7 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
 
 def get_application() -> FastAPI:
     application = FastAPI(responses={429: {'model': schemas.ErrorRs}, 400: {'model': schemas.ErrorRs}}, exception_handlers={
-                          429: rate_limit_exceeded_handler}, title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.", version="0.1.0")
+                          429: rate_limit_exceeded_handler}, title="Encryptor", description="Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.", version="1.0.3")
     return application
 
 

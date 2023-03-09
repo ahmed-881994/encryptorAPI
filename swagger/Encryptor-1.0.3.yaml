@@ -17,7 +17,9 @@ info:
     ---
 
     [GitHub repo](https://github.com/ahmed-881994/encryptorAPI)
-  version: 1.0.0
+    
+    [Linkedin](https://www.linkedin.com/in/ahmed-safwat-eldamanhoury/)
+  version: 1.0.3
 servers:
   - url: "{protocol}://127.0.0.1:{port}"
     variables: 
@@ -34,10 +36,9 @@ servers:
 paths:
   /caesar:
     post:
-      summary: Encrypts plain text using the Caesar method
+      summary: Caesar
       operationId: caesar_caesar_post
       requestBody:
-        description: Request body
         content:
           application/json:
             schema:
@@ -50,18 +51,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EncryptRs'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
   /morse:
     post:
-      summary: Encrypts plain text using the Morse method
+      summary: Morse
       operationId: morse_morse_post
       requestBody:
-        description: Request body
         content:
           application/json:
             schema:
@@ -74,18 +86,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EncryptRs'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
   /numeric:
     post:
-      summary: Encrypts plain text using the Numeric method
+      summary: Numeric
       operationId: numeric_numeric_post
       requestBody:
-        description: Request body
         content:
           application/json:
             schema:
@@ -98,18 +121,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EncryptRs'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
   /reversenumeric:
     post:
-      summary: Encrypts plain text using the Reverse Numeric method
-      operationId: reversenumeric_reversenumeric_post
+      summary: Reverse Numeric
+      operationId: reverse_numeric_reversenumeric_post
       requestBody:
-        description: Request body
         content:
           application/json:
             schema:
@@ -122,14 +156,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EncryptRs'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
+  /natoalphabet:
+    post:
+      summary: Nato Alphabet
+      operationId: nato_alphabet_natoalphabet_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EncryptNATORq'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EncryptRs'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRs'
 components:
   schemas:
+    Detail:
+      title: Detail
+      required:
+        - msg
+      type: object
+      properties:
+        msg:
+          title: Msg
+          type: string
     EncryptCaesarRq:
       title: EncryptCaesarRq
       required:
@@ -140,12 +230,23 @@ components:
       properties:
         plainText:
           title: Plaintext
+          minLength: 1
           type: string
         language:
-          $ref: '#/components/schemas/langEnum'
+          $ref: '#/components/schemas/lang_enum'
         shift:
           title: Shift
           type: integer
+    EncryptNATORq:
+      title: EncryptNATORq
+      required:
+        - plainText
+      type: object
+      properties:
+        plainText:
+          title: Plaintext
+          minLength: 1
+          type: string
     EncryptRq:
       title: EncryptRq
       required:
@@ -155,9 +256,10 @@ components:
       properties:
         plainText:
           title: Plaintext
+          minLength: 1
           type: string
         language:
-          $ref: '#/components/schemas/langEnum'
+          $ref: '#/components/schemas/lang_enum'
     EncryptRs:
       title: EncryptRs
       required:
@@ -167,6 +269,17 @@ components:
         cypherText:
           title: Cyphertext
           type: string
+    ErrorRs:
+      title: ErrorRs
+      required:
+        - detail
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
     HTTPValidationError:
       title: HTTPValidationError
       type: object
@@ -197,8 +310,8 @@ components:
         type:
           title: Error Type
           type: string
-    langEnum:
-      title: langEnum
+    lang_enum:
+      title: lang_enum
       enum:
         - AR
         - EN
