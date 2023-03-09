@@ -222,7 +222,7 @@ alphabets = {
         'golf',
         'hotel',
         'india',
-        'juliet',
+        'juliett',
         'kilo',
         'lima',
         'mike',
