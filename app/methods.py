@@ -203,6 +203,8 @@ def encode_NATO(plain_text: str) -> Dict:
                 cypher_text += ' ' + str(code)
             elif char == ' ':
                 cypher_text += ' (space)'
+            elif char in lookups.alphabets["SpecialCharacters"]:
+                pass
             else:
                 code = lookups.alphabets['NATOLetters'][lookups.alphabets['EN']["letters"].index(
                     char)]

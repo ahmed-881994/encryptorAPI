@@ -402,6 +402,8 @@ def encode_NATO(plain_text: str) -> Dict:
                 cypher_text += ' ' + str(code)
             elif char == ' ':
                 cypher_text += ' (space)'
+            elif char in alphabets["SpecialCharacters"]:
+                pass
             else:
                 code = alphabets['NATOLetters'][alphabets['EN']
                                                 ["letters"].index(char)]
