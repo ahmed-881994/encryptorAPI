@@ -54,7 +54,7 @@ class EncryptRs(BaseModel):cypherText:str
 class Detail(BaseModel):msg:str
 class ErrorRs(BaseModel):detail:List[Detail]
 async def rate_limit_exceeded_handler(request:Request,exc:RateLimitExceeded):A=[];A.append({_E:f"Rate limit exceeded: {exc.detail} Try again in a while..."});B={'detail':A};return JSONResponse(status_code=status.HTTP_429_TOO_MANY_REQUESTS,content=B)
-def get_application()->FastAPI:B='model';A=FastAPI(responses={429:{B:ErrorRs},400:{B:ErrorRs}},exception_handlers={429:rate_limit_exceeded_handler},title='Encryptor',description='Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.',version='0.1.0');return A
+def get_application()->FastAPI:B='model';A=FastAPI(responses={429:{B:ErrorRs},400:{B:ErrorRs}},exception_handlers={429:rate_limit_exceeded_handler},title='Encryptor',description='Encrypt plain text using simple encryption *i.e*: ***Caesar***, ***Morse***, etc.',version='1.0.3');return A
 app=get_application()
 LIMIT='5/minute'
 handler=Mangum(app)
