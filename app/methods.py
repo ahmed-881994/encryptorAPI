@@ -94,17 +94,11 @@ def encrypt_morse(plain_text: str, lang: str) -> Dict:
                 or char in lookups.alphabets["EN"]["numbers"]
             ):  # handles numbers
                 if char in lookups.alphabets["AR"]["numbers"]:
-                    cypher_text += ' ' + \
-                        lookups.alphabets['Morse']['Numbers'][lookups.alphabets['AR']["numbers"].index(
-                            char)]
+                    cypher_text += '  ' + lookups.alphabets['Morse']['Numbers'][lookups.alphabets['AR']["numbers"].index(char)]
                 elif char in lookups.alphabets["EN"]["numbers"]:
-                    cypher_text += ' ' + \
-                        lookups.alphabets['Morse']['Numbers'][lookups.alphabets['EN']["numbers"].index(
-                            char)]
+                    cypher_text += '  ' + lookups.alphabets['Morse']['Numbers'][lookups.alphabets['EN']["numbers"].index( char)]
             else:
-                cypher_text += ' ' + \
-                    lookups.alphabets['Morse'][lang][lookups.alphabets[lang]["letters"].index(
-                        char)]
+                cypher_text += '  '+lookups.alphabets['Morse'][lang][lookups.alphabets[lang]["letters"].index(char)]
         return {"status": 200, "cypher_text": cypher_text.strip()}
     else:
         return {"status": 400, "msg": "Plain text and language choice don't match"}
