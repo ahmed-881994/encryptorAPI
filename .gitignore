@@ -6,3 +6,5 @@ lib
 .DS_Store
 lambda_func/lambda_function.zip
 lambda_function.zip
+
+.space
