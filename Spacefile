@@ -1,0 +1,12 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: encryptorAPI
+    src: ./
+    engine: python3.9
+    public_routes:
+      - "/*"
+    primary: true
+    public: true
+    run: uvicorn app.main:app
+    dev: .venv/bin/uvicorn app.main:app --reload
