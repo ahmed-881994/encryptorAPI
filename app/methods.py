@@ -1,5 +1,5 @@
 from typing import Dict
-from . import lookups
+from app import lookups
 # handles Arabic letters variants
 
 
