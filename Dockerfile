@@ -18,7 +18,7 @@ EXPOSE 8000
 
 ENTRYPOINT [ "uvicorn" ]
 
-CMD ["app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+CMD ["main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
 
 # docker build -t encryptorapi .
 # docker run -it --rm --name encryptorapi -p 8000:8000  encryptorapi

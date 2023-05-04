@@ -104,7 +104,7 @@ to install **FastAPI** and all it's dependencies
 ---
 ## Running the app using Uvicorn
 
-run `uvicorn app.main:app --reload` the `--reload` flag enables hot reload on saving any changes
+run `uvicorn main:app --reload` the `--reload` flag enables hot reload on saving any changes
 
 ---
 ## Docker
