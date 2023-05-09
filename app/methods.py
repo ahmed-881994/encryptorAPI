@@ -3,7 +3,7 @@ from app import lookups
 # handles Arabic letters variants
 
 
-def handle_arabic_variants(chars: list[str]) -> list[str]:
+def handle_arabic_variants(chars: list[str], method:str|None) -> list[str]:
     """Handles variants of the Arabic letters and returns a default value for similar variants
 
     Args:
@@ -14,7 +14,10 @@ def handle_arabic_variants(chars: list[str]) -> list[str]:
     """
     for char in chars:
         if char in ['أ', 'ء', 'ئ', 'ى', 'آ', 'إ']:
-            chars[chars.index(char)] = 'ا'
+            if method == 'morse' and char=='ء':
+                pass
+            else:
+                chars[chars.index(char)] = 'ا'
         elif char == 'ة':
             chars[chars.index(char)] = 'ت'
         elif char == 'ؤ':
@@ -37,7 +40,7 @@ def encrypt_caesar(plain_text: str, lang: str, shift: int) -> Dict:
     plain_text = plain_text.upper()
     chars = list(plain_text)
     if lang == 'AR':
-        chars = handle_arabic_variants(chars)
+        chars = handle_arabic_variants(chars,"caesar")
     if chars[0] in lookups.alphabets[lang]["letters"] or chars[0] in lookups.alphabets["AR"]["numbers"] or chars[0] in lookups.alphabets["EN"]["numbers"]:
         for char in chars:
             if char == " ":  # handles empty space
@@ -79,7 +82,7 @@ def encrypt_morse(plain_text: str, lang: str) -> Dict:
     plain_text = plain_text.upper()
     chars = list(plain_text)
     if lang == 'AR':
-        chars = handle_arabic_variants(chars)
+        chars = handle_arabic_variants(chars, 'morse')
     if chars[0] in lookups.alphabets[lang]["letters"] or chars[0] in lookups.alphabets["AR"]["numbers"] or chars[0] in lookups.alphabets["EN"]["numbers"]:
         for char in chars:
             if char == " ":  # handles empty space
@@ -118,7 +121,7 @@ def encrypt_numeric(plain_text: str, lang: str) -> Dict:
     plain_text = plain_text.upper()
     chars = list(plain_text)
     if lang == 'AR':
-        chars = handle_arabic_variants(chars)
+        chars = handle_arabic_variants(chars,'numeric')
     if chars[0] in lookups.alphabets[lang]["letters"] or chars[0] in lookups.alphabets["AR"]["numbers"] or chars[0] in lookups.alphabets["EN"]["numbers"]:
         for char in chars:
             if char == " ":  # handles empty space
@@ -154,7 +157,7 @@ def encrypt_reverse_numeric(plain_text: str, lang: str) -> Dict:
     plain_text = plain_text.upper()
     chars = list(plain_text)
     if lang == 'AR':
-        chars = handle_arabic_variants(chars)
+        chars = handle_arabic_variants(chars,'reverse_numeric')
     if chars[0] in lookups.alphabets[lang]["letters"] or chars[0] in lookups.alphabets["AR"]["numbers"] or chars[0] in lookups.alphabets["EN"]["numbers"]:
         for char in chars:
             if char == " ":  # handles empty space
