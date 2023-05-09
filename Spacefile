@@ -3,10 +3,8 @@ v: 0
 icon: ./app/assets/favicon.ico
 micros:
   - name: encryptorAPI
-    src: ./
+    src: .
     engine: python3.9
-    public_routes:
-      - "/*"
     primary: true
     public: true
     run: uvicorn main:app

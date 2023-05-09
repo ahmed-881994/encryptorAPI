@@ -3,7 +3,7 @@ from app import lookups
 # handles Arabic letters variants
 
 
-def handle_arabic_variants(chars: list[str], method:str|None) -> list[str]:
+def handle_arabic_variants(chars: list[str], method:str) -> list[str]:
     """Handles variants of the Arabic letters and returns a default value for similar variants
 
     Args:
